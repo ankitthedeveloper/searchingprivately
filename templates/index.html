@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Private Data Search</title>
+    <meta name="robots" content="noindex" />
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Private Data Search</h1>
+
+      <input
+        type="text"
+        id="searchBox"
+        placeholder="Search by id,name, address, father name, mobile..."
+      />
+
+      <p id="resultCount"></p>
+      <div id="results"></div>
+    </div>
+
+    <script>
+      const searchBox = document.getElementById("searchBox");
+      const resultsDiv = document.getElementById("results");
+      const resultCount = document.getElementById("resultCount");
+
+      searchBox.addEventListener("input", async function () {
+        const query = searchBox.value.trim();
+
+        if (query.length < 2) {
+          resultsDiv.innerHTML = "";
+          resultCount.innerText = "";
+          return;
+        }
+
+        const response = await fetch(`/search?q=${query}`);
+        const data = await response.json();
+
+        resultsDiv.innerHTML = "";
+        resultCount.innerText = data.length + " result(s) found";
+
+        data.forEach((row) => {
+          resultsDiv.innerHTML += `
+            <div class="card">
+            <p><strong>ID:</strong> ${row.ID}</p>
+                <p><strong>Name:</strong> ${row.name}</p>
+                <p><strong>Father Name:</strong> ${row.father_name}</p>
+                <p><strong>Address:</strong> ${row.address}</p>
+                <p><strong>Mobile:</strong> ${row.mobile}</p>
+            </div>
+        `;
+        });
+      });
+    </script>
+  </body>
+</html>
